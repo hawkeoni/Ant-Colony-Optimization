@@ -14,11 +14,11 @@ def testcase(graphsize, ants, **kwargs):
     for i in range(kwargs.get("iter", 100)):
         c.create_routes()
         c.print_result()
-    return g, c
+    return g
 
 
 
 
 
-g = testcase(graphsize=9, 50)
+g = testcase(9, 50)
 bestpath, bestlen = get_shortest_path(g)
