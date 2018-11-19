@@ -6,7 +6,7 @@ from binascii import hexlify, unhexlify
 
 class CompleteGraph:
 
-    def __init__(self, nodes=1, low=0, high=200, matrix=None):
+    def __init__(self, nodes=1, low=1, high=200, matrix=None):
         if matrix is not None:
             self._matrix = matrix
             self.nodes = matrix.shape[0]

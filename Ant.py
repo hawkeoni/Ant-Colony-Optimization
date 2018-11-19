@@ -38,7 +38,9 @@ class Ant:
 
 class Colony:
 
-    def __init__(self, graph, size, vaporize):
+    def __init__(self, graph, size, vaporize, pher=0.6, tactics ='simple'):
+        self.pheromone = pher
+        self.tactics = tactics
         self.vaporize = vaporize
         self.size = size
         self.graph = graph
@@ -47,7 +49,10 @@ class Colony:
         self.path = np.array([])
 
     def reassign(self):
-        self._colony = [Ant(self.graph.nodes) for _ in range(self.size)]
+        if self.tactics == 'maxmin':
+            self._colony = [Ant(self.graph.nodes, pher=0) for _ in range(self.size)]
+        else:
+            self._colony = [Ant(self.graph.nodes) for _ in range(self.size)]
 
     def _step(self):
         for ant in self._colony:
@@ -55,6 +60,15 @@ class Colony:
             #print("Ant %d is going to node %d" % (id(ant), ant.visited[-1]))
 
     def _backtrack(self):
+        if self.tactics == "maxmin":
+            best_ant = 0
+            m = float('inf')
+            for i, ant in enumerate(self._colony):
+                if ant.length < m:
+                    m = ant.length
+                    best_ant = i
+            self._colony[best_ant].pher = self.pheromone
+
         for ant in self._colony:
             yield ant.backtrack(self.graph)
 
@@ -74,6 +88,7 @@ class Colony:
                 self.path = path
 
         self.graph.pheromone += -1 * rem_ph + rem_ph * (1 - self.vaporize)
-        print("Best path is " + '->'.join(map(str, self.path)) + ' of length %d' % self.best)
         self.reassign()
 
+    def print_result(self):
+        print("Best path is " + '->'.join(map(str, self.path)) + ' of length %d' % self.best)
