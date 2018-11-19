@@ -37,11 +37,14 @@ class CompleteGraph:
             self._matrix[node_num][node_num:] = line
 
     def __getitem__(self, index):
-        index = (max(index), min(index))
+        index = (min(index), max(index))
         return self._matrix[index]
 
 class TSGraph(CompleteGraph):
 
-    def __init__(self, nodes=1, phr=0.05):
-        CompleteGraph.__init__(self, nodes)
+    def __init__(self, nodes=1, phr=0.05, matrix=None):
+        if matrix is not None:
+            CompleteGraph.__init__(matrix=matrix)
+        else:
+            CompleteGraph.__init__(self, nodes)
         self.pheromone = np.full((nodes, nodes), phr)
