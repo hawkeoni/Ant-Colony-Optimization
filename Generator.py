@@ -6,19 +6,17 @@ from binascii import hexlify, unhexlify
 
 class CompleteGraph:
 
-    def __init__(self, n=1, low=0, high=200, matrix=None):
+    def __init__(self, nodes=1, low=0, high=200, matrix=None):
         if matrix is not None:
             self._matrix = matrix
             self.nodes = matrix.shape[0]
         else:
-            self.nodes = n
+            self.nodes = nodes
             self.randomize(low, high)
-        np.fill_diagonal(self._matrix, 0)
 
     def randomize(self, low, high):
         shape = (self.nodes, self.nodes)
         self._matrix = np.random.randint(low, high, shape)
-        np.fill_diagonal(self._matrix, 0)
 
     def to_xml(self, filename):
         xml_document = ET.Element('CompleteGraph')
@@ -41,3 +39,9 @@ class CompleteGraph:
     def __getitem__(self, index):
         index = (max(index), min(index))
         return self._matrix[index]
+
+class TSGraph(CompleteGraph):
+
+    def __init__(self, nodes=1, phr=0.05):
+        CompleteGraph.__init__(self, nodes)
+        self.pheromone = np.full((nodes, nodes), phr)

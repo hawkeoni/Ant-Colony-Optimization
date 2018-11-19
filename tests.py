@@ -23,7 +23,7 @@ class TestCompleteGraph(unittest.TestCase):
             pass
 
     def test_init_random(self):
-        g = CompleteGraph(n=5, low=1, high=2)
+        g = CompleteGraph(nodes=5, low=1, high=2)
         self.assertEqual(g.nodes, 5)
         self.assertEqual(g[1, 0], 1)
 
@@ -34,7 +34,7 @@ class TestCompleteGraph(unittest.TestCase):
         self.assertEqual(g[3, 2], matrix[3][2])
 
     def test_randomize(self):
-        g = CompleteGraph(n=5, low=1, high=2)
+        g = CompleteGraph(nodes=5, low=1, high=2)
         g.randomize(1, 2)
         self.assertEqual(g.nodes, 5)
         self.assertEqual(g[3, 2], 1)
