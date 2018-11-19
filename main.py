@@ -8,8 +8,10 @@ import argparse
 
 
 def ACO_shortest(graphsize, ants, **kwargs):
-    g = TSGraph(graphsize)
-    #print(g._matrix)
+    if kwargs['file'] is not None:
+        g = TSGraph(filename=kwargs['file'])
+    else:
+        g = TSGraph(graphsize)
     c = Colony(g, ants, kwargs.get("vaporize", 0.6), tactics=kwargs.get("tactics", "simple"))
     for i in range(kwargs.get("iter", 100)):
         c.create_routes()
@@ -25,9 +27,10 @@ if __name__ == "__main__":
     parser.add_argument('--vaporize', type=float, default=0.6, help="Vaporize rate")
     parser.add_argument('--iter', type=int, default=100, help="Iterations")
     parser.add_argument('--seed', type=int, default=0, help="Iterations")
+    parser.add_argument('--file', type=str, default=None, help="Serialized graph in xml format")
     args = parser.parse_args()
     np.random.seed(args.seed)
-    g = ACO_shortest(args.size, args.ants, iter=args.iter, vaporize=args.vaporize, tactics=args.tactics)
+    g = ACO_shortest(args.size, args.ants, iter=args.iter, vaporize=args.vaporize, tactics=args.tactics, file=args.file)
     if args.size < 10:
         bestpath, bestlen = get_shortest_path(g)
         print(bestpath, bestlen)

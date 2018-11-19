@@ -25,10 +25,12 @@ class Ant:
         self.length += graph[current, next_node]
         self.visited = np.append(self.visited, next_node)
 
-    def backtrack(self, graph):
+    def backtrack(self, graph, tmin=-1, tmax=2):
         begin = self.visited[-1]
         for next_node in self.visited[-2::-1]:
             i, j = min(begin, next_node), max(begin, next_node)
+            p_cur = self.pher / self.length
+            p_cur = min(max(p_cur, tmin), tmax)
             graph.pheromone[i][j] += self.pher / self.length
             begin = next_node
         return self.length, self.visited
@@ -38,9 +40,15 @@ class Ant:
 
 class Colony:
 
-    def __init__(self, graph, size, vaporize, pher=0.6, tactics ='simple'):
+    def __init__(self, graph, size, vaporize, pher=0.6, tactics ='simple', tmin=0.01, tmax=0.9):
         self.pheromone = pher
         self.tactics = tactics
+        if self.tactics == 'maxmin':
+            self.tmin = tmin
+            self.tmax = tmax
+        else:
+            self.tmin = -1
+            self.tmax = 2
         self.vaporize = vaporize
         self.size = size
         self.graph = graph
@@ -70,7 +78,7 @@ class Colony:
             self._colony[best_ant].pher = self.pheromone
 
         for ant in self._colony:
-            yield ant.backtrack(self.graph)
+            yield ant.backtrack(self.graph, self.tmin, self.tmax)
 
 
     def create_routes(self):
